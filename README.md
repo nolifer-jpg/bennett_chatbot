@@ -45,7 +45,6 @@ An intelligent desktop assistant for **Bennett University**, built with **Python
 | Frontend       | Tkinter           |
 | AI Engine      | Google Gemini API |
 | Data Storage   | JSON              |
-| Image Handling | Pillow            |
 | Language       | Python 3.x        |
 
 ---
@@ -57,7 +56,6 @@ bennett-info-bot/
 │
 ├── bennett_tk_bot.py        # Main application
 ├── private_data.json        # Internal structured knowledge
-├── campus_map.png           # Visual campus layout (optional)
 ├── README.md                # Documentation
 └── requirements.txt         # Dependencies
 ```
