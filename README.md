@@ -1,51 +1,51 @@
 # 🏫 Bennett Info Bot
 
-An intelligent desktop assistant for **Bennett University**, built with **Python + Tkinter + Gemini API**. This bot helps students navigate the campus, find locations, explore facilities, and get accurate university-related information using a combination of AI and a structured private knowledge base.
+A smart desktop assistant for **Bennett University**, built using **Python + Tkinter + Gemini API**. This application helps students and visitors navigate the campus, find facilities, and get accurate university-related information using AI combined with a structured private knowledge system.
 
 ---
 
 ## ✨ Features
 
-### 🤖 Smart AI Assistant
+### 🤖 AI-Powered University Assistant
 
-* Powered by **Google Gemini API** for natural language understanding.
-* Restricts answers strictly to Bennett University–related queries.
-* Gives clear, contextual, and student-friendly responses.
+* Uses **Google Gemini API** for natural language understanding.
+* Strictly answers only Bennett University-related queries.
+* Provides clear, contextual, and student-friendly responses.
 
-### 🗺 Visual Campus Map Panel
+### 🗺 Campus Map Panel
 
-* Displays a live campus map alongside the chat.
-* Supports custom uploaded map image (`campus_map.png`).
-* Perfect for navigation and orientation.
+* Displays a campus map alongside the chat interface.
+* Supports custom map image (`campus_map.png`).
+* Useful for orientation and quick visual reference.
 
-### 🧭 Direction-Based Answers
+### 🧭 Direction-Based Responses
 
-* Step-by-step navigation like:
+* Generates step-by-step navigation such as:
 
   > From A Block, walk straight and turn left to reach Snapeats.
 
-### 🧠 Private Knowledge System
+### 🧠 Private Knowledge Base
 
-* Uses `private_data.json` as a trusted internal source.
-* Ensures campus locations and facilities are always accurate.
+* Uses `private_data.json` as a trusted internal data source.
+* Ensures high accuracy for locations, buildings, and facilities.
 
-### 🎨 Modern Tkinter UI
+### 🎨 Modern UI (Tkinter)
 
-* Light/Dark Mode toggle
+* Light / Dark mode toggle
 * Clear Chat button
-* Animated "Thinking..." response
-* Side-by-side Chat + Map layout
+* Animated "Thinking..." indicator
+* Clean, responsive chat layout
 
 ---
 
 ## 🛠 Tech Stack
 
-| Component      | Technology        |
-| -------------- | ----------------- |
-| Frontend       | Tkinter           |
-| AI Engine      | Google Gemini API |
-| Data Storage   | JSON              |
-| Language       | Python 3.x        |
+| Component  | Technology        |
+| ---------- | ----------------- |
+| Frontend   | Tkinter           |
+| AI Engine  | Google Gemini API |
+| Data Store | JSON              |
+| Language   | Python 3.x        |
 
 ---
 
@@ -54,24 +54,34 @@ An intelligent desktop assistant for **Bennett University**, built with **Python
 ```
 bennett-info-bot/
 │
-├── bennett_tk_bot.py        # Main application
-├── private_data.json        # Internal structured knowledge
-├── README.md                # Documentation
-└── requirements.txt         # Dependencies
+├── main.py             # Application entry point
+├── ui.py               # Tkinter UI logic
+├── api_client.py       # Gemini API communication
+├── config.py           # Configuration & system prompt
+├── private_data.json   # Internal structured knowledge
+├── campus_map.png      # Optional campus map image
+├── requirements.txt    # Dependencies
+└── README.md           # Documentation
 ```
 
 ---
 
 ## 🚀 Installation
 
-### 1. Clone the repository
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/nolifer-acey/bennett_chatbot.git
 cd bennett_chatbot
 ```
 
-### 2. Set your Gemini API Key
+### 2️⃣ Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3️⃣ Set your Gemini API Key
 
 Linux / Mac:
 
@@ -85,7 +95,7 @@ Windows (PowerShell):
 setx GEMINI_API_KEY "YOUR_API_KEY"
 ```
 
-### 3. Run the app
+### 4️⃣ Run the application
 
 ```bash
 python main.py
@@ -93,7 +103,7 @@ python main.py
 
 ---
 
-## 🧭 Usage Examples
+## 🧭 Example Queries
 
 * "Where is Gobble?"
 * "How to go from A block to German Hanger"
@@ -102,110 +112,102 @@ python main.py
 
 ---
 
-# 🔮 Future Scope & Enhancements
+## 🔮 Future Enhancements
 
-Here are the potential next-generation upgrades for your bot 🚀
-
-## 1. 🗺 Interactive Map System
+### 🗺 Interactive Map System
 
 * Clickable buildings
-* Highlight path from source to destination
+* Highlighted navigation paths
 * Zoom & Pan controls
 * Real-time position tracking
 
-## 2. 📍 Smart Navigation
+### 📍 Smart Navigation
 
-* "Navigate me from C11 to LRC"
-* Shortest route algorithm
-* Indoor GPS support (future IoT integration)
+* Shortest path algorithm
+* Route optimization
+* Indoor positioning
 
-## 3. 🎤 Voice Assistant Mode
+### 🎤 Voice Assistant Mode
 
-* Speech-to-text queries
-* Text-to-speech responses
-* Hands-free navigation
+* Speech-to-text input
+* Text-to-speech output
+* Hands-free interaction
 
-## 4. 📱 Mobile App Version
+### 📱 Mobile Expansion
 
-* Android version using Kivy or Flutter
-* QR-based campus scanners
+* Android version (Kivy / Flutter)
+* QR-based campus locators
 
-## 5. 🧠 AI Memory System
+### 🧠 AI Memory
 
-* Personalized student profiles
+* Personalized preferences
 * Hostel-aware suggestions
-* Favorite places memory
+* Frequently visited places
 
-## 6. 🏢 Department-Specific Bot
+### 🏢 Multi-Mode Assistant
 
-* Different modes for:
+* Admissions Mode
+* Academic Mode
+* Placement Mode
+* Hostel Mode
 
-  * Admissions
-  * Academics
-  * Placements
-  * Hostels
+### 🔔 Notification System
 
-## 7. 🔔 Notification System
-
-* Timetable reminders
 * Event alerts
-* Library due-date warnings
+* Timetable reminders
+* Library due-date notices
 
-## 8. 🎓 Student Portal Integration
+### 🎓 Student Portal Integration
 
-* Login with Bennett ID
-* Course & timetable display
-* Attendance tracking
+* Bennett ID login
+* Attendance & timetable view
+* Academic progress tracking
 
-## 9. 📊 Analytics Dashboard
+### 📊 Analytics Dashboard
 
-* Most searched locations
 * Popular queries
-* Student movement heatmap
+* Heatmap of campus movement
+* Usage insights
 
-## 10. Multi-Language Support
+### 🌐 Multi-Language Support
 
 * Hindi
 * Bengali
-* Regional language support
+* Regional languages
 
 ---
 
 ## 🌟 Vision
 
-This project can evolve into a **full-scale Smart Campus Assistant**, supporting:
+This project aims to evolve into a **Smart Campus Ecosystem**, assisting with:
 
 * First-year navigation
 * Visitor guidance
-* Emergency directions
-* Real-time event info
-* Personalized academic planning
+* Emergency route assistance
+* Personalized campus experiences
+* Intelligent academic planning
 
 ---
 
 ## 🙌 Contributing
 
-Pull requests are welcome!
+Contributions are welcome! You can help by:
 
-Future contributors can help with:
+* Enhancing the UI
+* Improving AI prompt logic
+* Optimizing performance
+* Expanding map and navigation features
 
-* UI enhancements
-* AI prompt engineering
-* Map system improvements
-* Performance optimization
+Fork the repository and submit a pull request 🚀
 
 ---
 
 ## 📜 License
 
-This project is intended for educational and campus assistance use.
-You may adapt or extend it with proper attribution.
+This project is intended for educational and campus-support use. Feel free to modify and extend it with proper attribution.
 
 ---
 
-## 👨‍💻 Author
+### 💡 Developed for Bennett University Students & Visitors
 
-Developed by **Souhard Roy**
-B.Tech CSE Student, Bennett University
-
----
+Making campus navigation smarter, faster, and friendlier.

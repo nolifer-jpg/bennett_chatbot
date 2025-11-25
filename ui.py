@@ -1,84 +1,9 @@
-import requests
-import json
-import os
-import time
+# ui.py
 import tkinter as tk
 from tkinter import scrolledtext
 
-
-# ================= API SETUP =================
-
-
-def get_api_key():
-    return os.environ.get("GEMINI_API_KEY")
-
-
-def load_private_data(filepath="private_data.json"):
-    if not os.path.exists(filepath):
-        print(f"No private data file found at '{filepath}'.")
-        return []
-
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data.get("facts", [])
-    except Exception as e:
-        print("Error loading private data:", e)
-        return []
-
-
-def call_gemini_api(api_key, user_query, system_prompt, retries=3, delay=1):
-    apiUrl = (
-        "https://generativelanguage.googleapis.com/v1beta/models/"
-        "gemini-2.5-flash-preview-09-2025:generateContent"
-        f"?key={api_key}"
-    )
-
-    payload = {
-        "contents": [{"parts": [{"text": user_query}]}],
-        "tools": [{"google_search": {}}],
-        "systemInstruction": {"parts": [{"text": system_prompt}]},
-    }
-
-    for _ in range(retries):
-        try:
-            response = requests.post(apiUrl, json=payload, timeout=30)
-            response.raise_for_status()
-            result = response.json()
-
-            return (
-                result["candidates"][0]["content"]["parts"][0]["text"].strip()
-                if "candidates" in result
-                else "Sorry, I couldn't generate a valid response."
-            )
-        except Exception:
-            time.sleep(delay)
-
-    return "I'm having trouble processing your request right now."
-
-
-# ================= GLOBAL CONFIG =================
-
-API_KEY = get_api_key()
-PRIVATE_FACTS = load_private_data()
-PRIVATE_INFO_STRING = "\n".join(f"- {fact}" for fact in PRIVATE_FACTS)
-
-SYSTEM_PROMPT = f"""
-You are a friendly Bennett University assistant.
-
-RULES:
-1. Only answer Bennett University questions.
-2. Prioritize this private data for campus map info.
-3. Give clear directions for location questions.
-4. Never reveal passwords or sensitive credentials.
-5. If unrelated, politely refuse.
-
-PRIVATE DATA:
-{PRIVATE_INFO_STRING}
-"""
-
-
-# ================= TKINTER APP =================
+from api_client import call_gemini_api
+from config import API_KEY, SYSTEM_PROMPT
 
 
 class BennettTkBot:
@@ -227,16 +152,3 @@ class BennettTkBot:
             self.append_bot_text(bot_response)
 
         self.master.after(600, get_response)
-
-
-# ================= RUN =================
-
-
-def main():
-    root = tk.Tk()
-    BennettTkBot(root)
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
