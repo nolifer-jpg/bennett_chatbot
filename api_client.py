@@ -2,15 +2,10 @@
 import time
 import requests
 
-from config import SYSTEM_PROMPT
-
-# If you want, you can also import API_KEY here,
-# but we'll keep it passed in from outside for flexibility.
+from config import SYSTEM_PROMPT, API_KEY
 
 
-def call_gemini_api(
-    api_key, user_query, system_prompt=SYSTEM_PROMPT, retries=3, delay=1
-):
+def call_gemini_api(api_key=API_KEY, user_query, system_prompt=SYSTEM_PROMPT, retries=3, delay=1):
     apiUrl = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
         "gemini-2.5-flash-preview-09-2025:generateContent"
