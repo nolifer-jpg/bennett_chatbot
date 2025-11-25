@@ -67,17 +67,11 @@ bennett-info-bot/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/bennett-info-bot.git
-cd bennett-info-bot
+git clone https://github.com/nolifer-acey/bennett_chatbot.git
+cd bennett_chatbot
 ```
 
-### 2. Install dependencies
-
-```bash
-pip install requests pillow
-```
-
-### 3. Set your Gemini API Key
+### 2. Set your Gemini API Key
 
 Linux / Mac:
 
@@ -91,10 +85,10 @@ Windows (PowerShell):
 setx GEMINI_API_KEY "YOUR_API_KEY"
 ```
 
-### 4. Run the app
+### 3. Run the app
 
 ```bash
-python bennett_tk_bot.py
+python main.py
 ```
 
 ---
