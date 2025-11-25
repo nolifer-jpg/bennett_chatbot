@@ -59,7 +59,6 @@ bennett-info-bot/
 ├── api_client.py       # Gemini API communication
 ├── config.py           # Configuration & system prompt
 ├── private_data.json   # Internal structured knowledge
-├── campus_map.png      # Optional campus map image
 ├── requirements.txt    # Dependencies
 └── README.md           # Documentation
 ```
