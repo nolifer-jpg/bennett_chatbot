@@ -67,8 +67,8 @@ bennett-info-bot/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/bennett-info-bot.git
-cd bennett-info-bot
+git clone https://github.com/nolifer-acey/bennett_chatbot.git
+cd bennett_chatbot
 ```
 
 ### 2. Set your Gemini API Key
