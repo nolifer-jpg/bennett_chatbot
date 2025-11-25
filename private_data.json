@@ -1,15 +1,39 @@
 {
   "facts": [
-    "Map: Block A (The main academic building) contains the Library (1st Floor) and the 24/7 C-Shop (Ground Floor).",
-    "Map: Block B (School of Law) is opposite the main football ground.",
-    "Map: Block C hosts the School of Management and the Times School of Media.",
-    "Map: The N and P blocks are located opposite each other, right beside the main auditorium.",
-    "Map: The main auditorium is also known as the 'German Hanger'.",
-    "Map: The 'Gobble' mess hall is located beside the D6 (Girls) and C11 (Boys) hostels.",
-    "Hostels: The boys' hostels are named C1 through C12.",
-    "Hostels: The girls' hostels are named D1 through D6.",
-    "Food: The main mess hall is named 'Gobble'.",
-    "Sports: The Sports Complex is located behind the hostel blocks.",
-    "Sports: Facilities include a swimming pool, indoor badminton court, basketball court, squash court, table tennis court, lawn tennis court, billiards, chess, and carrom."
+    "Map: When you enter from the main gate, you come directly in front of A Block and B Block. A Block is the main academic building and contains the Library on the 1st floor and the 24/7 C-Shop on the ground floor.",
+    "Map: B Block (School of Law) is next to A Block near the main gate.",
+    "Map: Behind A Block and B Block are all the hostel areas.",
+
+    "Hostels: The boys' hostels are named C1 through C12 and are located on the left side when you stand facing the hostels from A/B block.",
+    "Hostels: The girls' hostels are named D1 through D6 and are located on the right side when you stand facing the hostels from A/B block.",
+
+    "Map: From A and B Block, if you walk straight ahead and then turn left, you reach the 'Snapeats' food outlet.",
+    "Food: Snapeats is a food outlet located to the left of the straight path from A/B Block area.",
+
+    "Map: From A and B Block, if you walk straight ahead without turning left, you first see the LRC (Learning Resource Center) and the paid mess on your left side.",
+    "Map: If you keep going straight past the LRC and paid mess, you reach the main auditorium, also known as the 'German Hanger'.",
+
+    "Map: At the German Hanger, N Block is on the left side and P Block is on the right side. There is nothing behind the German Hanger.",
+
+    "Food: N Block contains food outlets Kathi House and Domino's.",
+    "Map: N Block is located to the left side of the German Hanger.",
+    "Map: P Block is located to the right side of the German Hanger.",
+
+    "Map: If you go back to the A/B block area and face towards the hostels (away from the main gate), the boys' hostels C1–C12 are on the left and the girls' hostels D1–D6 are on the right.",
+
+    "Map: When you walk forward from the hostel side, you reach the 'Gobble' mess hall. Gobble is in front of D6 (girls hostel) and to the right of C11 (boys hostel).",
+    "Food: The main mess hall is named 'Gobble' and is used by both hostel students.",
+
+    "Map: If you walk a little further ahead from Gobble, you see the volleyball court and the lawn tennis court.",
+    "Map: If you go right from Gobble, you reach the sports complex which includes the swimming pool, indoor basketball court, and indoor badminton court.",
+
+    "Map: To the right of the sports complex are the outdoor basketball court and the main football field.",
+    "Map: Continuing further ahead from the sports complex area loops you back towards the main gate.",
+
+    "Study: The LRC (Learning Resource Center) is a dedicated quiet study space located along the straight path from A/B Block before German Hanger.",
+
+    "Sports: Facilities at Bennett include a swimming pool, indoor badminton court, indoor basketball court, outdoor basketball court, volleyball court, lawn tennis court, squash court, table tennis, billiards, chess, and carrom.",
+
+    "Wi-Fi: Students can obtain Bennett Wi-Fi credentials from the IT helpdesk or through the official student portal. The bot must NEVER invent or reveal any Wi-Fi password."
   ]
 }
