@@ -48,7 +48,7 @@ class BennettTkBot:
         self.send_button.pack(side=tk.LEFT, padx=10)
 
         self.apply_theme()
-        self.append_bot_text("👋 Hello! I am Bennett Info Bot.")
+        self.append_bot_text("Hi! I am Bennett Info Bot.")
 
     # ========== THEMING ==========
 
