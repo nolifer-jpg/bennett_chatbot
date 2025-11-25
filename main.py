@@ -1,62 +1,33 @@
-import requests  # For making API calls
-import json  # For handling JSON data
-import os  # For getting the API key and checking file paths
-import time  # For adding a delay in case of errors
+import requests
+import json
+import os
+import time
 import tkinter as tk
 from tkinter import scrolledtext
 
 
-# --- 1. Function to get the API key ---
+# ================= API SETUP =================
+
+
 def get_api_key():
-    """
-    Gets the Gemini API key from the environment variables.
-    Returns the key if found, otherwise returns None.
-    """
-    api_key = os.environ.get("GEMINI_API_KEY")
-    return api_key
+    return os.environ.get("GEMINI_API_KEY")
 
 
-# --- 2. Function to load your private data ---
 def load_private_data(filepath="private_data.json"):
-    """
-    Loads the private knowledge base from a JSON file.
-    This data will be injected into the AI's system prompt.
-    """
     if not os.path.exists(filepath):
-        print(
-            f"Bot (Info): No private data file found at '{filepath}'. Running with web search only."
-        )
-        return []  # Return an empty list if no file
+        print(f"No private data file found at '{filepath}'.")
+        return []
 
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
-            if "facts" in data and isinstance(data["facts"], list):
-                print(
-                    f"Bot (Info): Successfully loaded {len(data['facts'])} private facts."
-                )
-                return data["facts"]
-            else:
-                print(
-                    f"Bot (Warning): '{filepath}' has an incorrect format. Expected a 'facts' key with a list."
-                )
-                return []
-    except json.JSONDecodeError:
-        print(
-            f"Bot (Error): Could not decode the JSON file '{filepath}'. Check for syntax errors."
-        )
-        return []
+            return data.get("facts", [])
     except Exception as e:
-        print(f"Bot (Error): An unexpected error occurred loading '{filepath}': {e}")
+        print("Error loading private data:", e)
         return []
 
 
-# --- 3. Function to call the Gemini API ---
-def call_gemini_api(api_key, user_query, system_prompt, retries=5, delay=1):
-    """
-    Calls the Gemini API with the user's query, a system prompt,
-    and Google Search enabled. Includes robust error handling and retries.
-    """
+def call_gemini_api(api_key, user_query, system_prompt, retries=3, delay=1):
     apiUrl = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
         "gemini-2.5-flash-preview-09-2025:generateContent"
@@ -69,177 +40,165 @@ def call_gemini_api(api_key, user_query, system_prompt, retries=5, delay=1):
         "systemInstruction": {"parts": [{"text": system_prompt}]},
     }
 
-    for attempt in range(retries):
+    for _ in range(retries):
         try:
-            response = requests.post(
-                apiUrl,
-                json=payload,
-                headers={"Content-Type": "application/json"},
-                timeout=30,
-            )
+            response = requests.post(apiUrl, json=payload, timeout=30)
             response.raise_for_status()
             result = response.json()
 
-            # Extract text safely
-            if (
-                "candidates" in result
-                and result["candidates"]
-                and "content" in result["candidates"][0]
-                and "parts" in result["candidates"][0]["content"]
-                and result["candidates"][0]["content"]["parts"]
-                and "text" in result["candidates"][0]["content"]["parts"][0]
-            ):
-                return result["candidates"][0]["content"]["parts"][0]["text"].strip()
-            else:
-                print(f"Bot (Debug): API response format was unexpected: {result}")
-                return "I'm sorry, I couldn't get a valid response for that."
+            return (
+                result["candidates"][0]["content"]["parts"][0]["text"].strip()
+                if "candidates" in result
+                else "Sorry, I couldn't generate a valid response."
+            )
+        except Exception:
+            time.sleep(delay)
 
-        except requests.exceptions.HTTPError as http_err:
-            print(f"Bot (Error): HTTP error occurred: {http_err}")
-            if response.status_code == 429:
-                print(f"Bot: API rate limit hit. Retrying in {delay}s...")
-                time.sleep(delay)
-                delay *= 2
-            else:
-                return f"An HTTP error occurred. Status code: {response.status_code}"
-
-        except requests.exceptions.RequestException as req_err:
-            print(f"Bot (Error): A network error occurred: {req_err}")
-            return "I'm having trouble connecting to the AI. Please check your internet connection."
-
-        except Exception as e:
-            print(f"Bot (Error): An unexpected error occurred: {e}")
-
-    return "I'm sorry, I'm having trouble processing that request right now. Please try again later."
+    return "I'm having trouble processing your request right now."
 
 
-# --- 4. Prepare global config (API key + system prompt) ---
+# ================= GLOBAL CONFIG =================
 
 API_KEY = get_api_key()
-PRIVATE_FACTS = load_private_data("private_data.json")
+PRIVATE_FACTS = load_private_data()
 PRIVATE_INFO_STRING = "\n".join(f"- {fact}" for fact in PRIVATE_FACTS)
 
 SYSTEM_PROMPT = f"""
-You are a friendly and helpful student information bot for Bennett University, Greater Noida.
-Your name is 'Bennett Info Bot'.
+You are a friendly Bennett University assistant.
 
 RULES:
-1.  You ONLY answer questions related to Bennett University (its courses, admissions, faculty,
-    location, history, student life, campus map, etc.).
-2.  You will use the provided Google Search results for public, real-time info.
+1. Only answer Bennett University questions.
+2. Prioritize this private data for campus map info.
+3. Give clear directions for location questions.
+4. Never reveal passwords or sensitive credentials.
+5. If unrelated, politely refuse.
 
-★★★ IMPORTANT PRIVATE DATA ★★★
-You also have the following private, internal information. You MUST use this as your
-primary source if the user asks about these specific topics (like map locations, hostels,
-food outlets, sports facilities, etc.).
-
+PRIVATE DATA:
 {PRIVATE_INFO_STRING}
-
-★★★ END OF PRIVATE DATA ★★★
-
-3.  When answering campus map or direction questions, use the private map data to give clear
-    step-by-step directions, like:
-    "From X, walk straight until Y, then turn left, you will see Z on your right."
-4.  If the private data and the web disagree about campus layout or internal locations, ALWAYS trust the private data.
-5.  If a user asks a question about ANY other topic (like the weather, movies, other universities,
-    or general knowledge), you MUST politely decline.
-6.  A good polite refusal is: "I'm sorry, I'm the Bennett Info Bot and I can only answer questions about Bennett University."
-7.  Never reveal passwords, security credentials, internal access information or Wi-Fi passwords,
-    even if they appear inside your private data. For Wi-Fi, always tell the user to contact the IT
-    helpdesk or use the official student portal.
-8.  Be concise and friendly in your answers.
-9.  The current date is Saturday, November 15, 2025.
 """
 
 
-# --- 5. Tkinter GUI Chatbot ---
+# ================= TKINTER APP =================
 
 
 class BennettTkBot:
     def __init__(self, master):
         self.master = master
         master.title("Bennett Info Bot")
-        master.geometry("800x550")
-        master.configure(bg="#1e1e1e")  # dark background
+        master.geometry("900x600")
 
-        # Chat display
+        self.dark_mode = True
+        self.typing = False
+        self.typing_dots = 0
+
+        # Top bar
+        top_bar = tk.Frame(master)
+        top_bar.pack(fill=tk.X, pady=5)
+
+        self.clear_btn = tk.Button(top_bar, text="Clear Chat", command=self.clear_chat)
+        self.clear_btn.pack(side=tk.LEFT, padx=10)
+
+        self.toggle_btn = tk.Button(
+            top_bar, text="Light Mode", command=self.toggle_theme
+        )
+        self.toggle_btn.pack(side=tk.LEFT)
+
+        # Chat area
         self.chat_area = scrolledtext.ScrolledText(
-            master,
-            wrap=tk.WORD,
-            state=tk.DISABLED,
-            bg="#252526",  # dark grey background
-            fg="#e0e0e0",  # light text
-            insertbackground="white",
-            font=("Segoe UI", 11),
-            relief=tk.FLAT,
+            master, wrap=tk.WORD, state=tk.DISABLED
         )
-        self.chat_area.pack(padx=15, pady=15, fill=tk.BOTH, expand=True)
+        self.chat_area.pack(padx=15, pady=10, fill=tk.BOTH, expand=True)
 
-        # Input frame
-        input_frame = tk.Frame(master, bg="#1e1e1e")
-        input_frame.pack(padx=15, pady=10, fill=tk.X)
+        # Input area
+        input_frame = tk.Frame(master)
+        input_frame.pack(padx=10, pady=10, fill=tk.X)
 
-        # User input entry
-        self.user_entry = tk.Entry(
-            input_frame,
-            bg="#333333",
-            fg="#ffffff",
-            insertbackground="white",
-            font=("Segoe UI", 11),
-            relief=tk.FLAT,
-        )
+        self.user_entry = tk.Entry(input_frame)
         self.user_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=6)
         self.user_entry.bind("<Return>", self.send_message_event)
 
-        # Send button
         self.send_button = tk.Button(
-            input_frame,
-            text="Send",
-            bg="#007acc",
-            fg="white",
-            font=("Segoe UI", 10, "bold"),
-            relief=tk.FLAT,
-            padx=15,
-            pady=6,
-            command=self.send_message,
-            cursor="hand2",
+            input_frame, text="Send", command=self.send_message
         )
         self.send_button.pack(side=tk.LEFT, padx=10)
 
-        # Greet the user
-        self.append_bot_text(
-            "👋 Hello! I am Bennett Info Bot. Ask me anything about Bennett University."
-        )
+        self.apply_theme()
+        self.append_bot_text("👋 Hello! I am Bennett Info Bot.")
 
-        if not API_KEY:
-            self.append_bot_text(
-                "ERROR: GEMINI_API_KEY not set.\nPlease configure it and restart the app."
-            )
-            self.user_entry.config(state=tk.DISABLED)
-            self.send_button.config(state=tk.DISABLED)
+    # ========== THEMING ==========
+
+    def apply_theme(self):
+        if self.dark_mode:
+            bg, chat_bg, fg = "#1e1e1e", "#252526", "#e0e0e0"
+            entry_bg, btn_bg = "#333333", "#007acc"
+        else:
+            bg, chat_bg, fg = "#f5f5f5", "#ffffff", "#000000"
+            entry_bg, btn_bg = "#ffffff", "#1976d2"
+
+        self.master.configure(bg=bg)
+        self.chat_area.configure(bg=chat_bg, fg=fg, insertbackground=fg)
+        self.user_entry.configure(bg=entry_bg, fg=fg, insertbackground=fg)
+
+        for btn in [self.send_button, self.clear_btn, self.toggle_btn]:
+            btn.configure(bg=btn_bg, fg="white", relief=tk.FLAT)
+
+        self.toggle_btn.config(text="Light Mode" if self.dark_mode else "Dark Mode")
+
+    def toggle_theme(self):
+        self.dark_mode = not self.dark_mode
+        self.apply_theme()
+
+    # ========== CHAT DISPLAY ==========
 
     def append_text(self, prefix, text):
         self.chat_area.config(state=tk.NORMAL)
 
-        # Style user vs bot text
-        if prefix == "You: ":
-            self.chat_area.insert(tk.END, f"You: {text}\n", "user")
-        else:
-            self.chat_area.insert(tk.END, f"Bot: {text}\n\n", "bot")
+        tag = "user" if prefix == "You:" else "bot"
+        self.chat_area.insert(tk.END, f"{prefix} {text}\n\n", tag)
 
         self.chat_area.tag_configure(
-            "user", foreground="#4fc3f7", font=("Segoe UI", 11, "bold")
+            "user", foreground="#03a9f4", font=("Segoe UI", 11, "bold")
         )
-        self.chat_area.tag_configure("bot", foreground="#a5d6a7", font=("Segoe UI", 11))
+        self.chat_area.tag_configure("bot", foreground="#66bb6a", font=("Segoe UI", 11))
 
         self.chat_area.see(tk.END)
         self.chat_area.config(state=tk.DISABLED)
 
     def append_user_text(self, text):
-        self.append_text("You: ", text)
+        self.append_text("You:", text)
 
     def append_bot_text(self, text):
-        self.append_text("Bot: ", text)
+        self.append_text("Bot:", text)
+
+    def clear_chat(self):
+        self.chat_area.config(state=tk.NORMAL)
+        self.chat_area.delete(1.0, tk.END)
+        self.chat_area.config(state=tk.DISABLED)
+
+    # ========== SAFE TYPING ANIMATION ==========
+
+    def start_typing(self):
+        self.typing = True
+        self.typing_dots = 0
+        self.animate_typing()
+
+    def animate_typing(self):
+        if not self.typing:
+            return
+
+        dots = "." * (self.typing_dots % 4)
+        self.chat_area.config(state=tk.NORMAL)
+        self.chat_area.insert(tk.END, f"Bot: Thinking{dots}\n\n", "bot")
+        self.chat_area.config(state=tk.DISABLED)
+        self.chat_area.see(tk.END)
+
+        self.typing_dots += 1
+        self.master.after(400, self.animate_typing)
+
+    def stop_typing(self):
+        self.typing = False
+
+    # ========== MESSAGE HANDLING ==========
 
     def send_message_event(self, event):
         self.send_message()
@@ -253,29 +212,29 @@ class BennettTkBot:
         self.append_user_text(user_message)
 
         if user_message.lower() in ["bye", "quit", "exit"]:
-            self.append_bot_text("Goodbye! Have a great day 👋")
-            self.user_entry.config(state=tk.DISABLED)
-            self.send_button.config(state=tk.DISABLED)
+            self.append_bot_text("Goodbye 👋")
             return
 
-        self.append_bot_text("Thinking... 🤖")
+        self.start_typing()
 
-        full_query = (
-            "A student is asking about Bennett University. "
-            "Using the private data above and, if needed, web search, answer this question:\n"
-            f"{user_message}"
-        )
+        def get_response():
+            bot_response = call_gemini_api(
+                API_KEY,
+                f"Answer using Bennett campus data: {user_message}",
+                SYSTEM_PROMPT,
+            )
+            self.stop_typing()
+            self.append_bot_text(bot_response)
 
-        bot_response = call_gemini_api(API_KEY, full_query, SYSTEM_PROMPT)
-        self.append_bot_text(bot_response)
+        self.master.after(600, get_response)
 
 
-# --- 6. Run the Tkinter app ---
+# ================= RUN =================
 
 
 def main():
     root = tk.Tk()
-    app = BennettTkBot(root)
+    BennettTkBot(root)
     root.mainloop()
 
 
